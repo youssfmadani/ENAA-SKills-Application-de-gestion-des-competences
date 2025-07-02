@@ -1,6 +1,8 @@
 package com.example.enaaskills.controller;
 
+import com.example.enaaskills.dto.CompetenceDTO;
 import com.example.enaaskills.entity.Competence;
+import com.example.enaaskills.mapper.CompetenceMapper;
 import com.example.enaaskills.service.CompetenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/competences")
@@ -16,23 +19,30 @@ public class CompetenceController {
     private CompetenceService competenceService;
 
     @PostMapping
-    public Competence create(@RequestBody Competence competence) {
-        return competenceService.saveCompetence(competence);
+    public ResponseEntity<CompetenceDTO> create(@RequestBody CompetenceDTO competenceDTO) {
+        Competence competence = CompetenceMapper.toEntity(competenceDTO);
+        Competence saved = competenceService.saveCompetence(competence);
+        return ResponseEntity.ok(CompetenceMapper.toDTO(saved));
     }
 
     @GetMapping
-    public List<Competence> getAll() {
-        return competenceService.getAllCompetences();
+    public ResponseEntity<List<CompetenceDTO>> getAll() {
+        List<CompetenceDTO> dtos = competenceService.getAllCompetences().stream()
+                .map(CompetenceMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Competence> getById(@PathVariable Long id) {
+    public ResponseEntity<CompetenceDTO> getById(@PathVariable Long id) {
         Optional<Competence> competence = competenceService.getCompetenceById(id);
-        return competence.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return competence.map(c -> ResponseEntity.ok(CompetenceMapper.toDTO(c)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         competenceService.deleteCompetence(id);
+        return ResponseEntity.noContent().build();
     }
 } 

@@ -5,6 +5,8 @@ public class ValidationDTO {
     private Long apprenantId;
     private Long subCompetenceId;
     private boolean validated;
+    private String apprenantName;
+    private String subCompetenceName;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -15,4 +17,8 @@ public class ValidationDTO {
     public void setSubCompetenceId(Long subCompetenceId) { this.subCompetenceId = subCompetenceId; }
     public boolean isValidated() { return validated; }
     public void setValidated(boolean validated) { this.validated = validated; }
+    public String getApprenantName() { return apprenantName; }
+    public void setApprenantName(String apprenantName) { this.apprenantName = apprenantName; }
+    public String getSubCompetenceName() { return subCompetenceName; }
+    public void setSubCompetenceName(String subCompetenceName) { this.subCompetenceName = subCompetenceName; }
 } 
